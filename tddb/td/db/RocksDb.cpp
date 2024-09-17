@@ -75,7 +75,7 @@ Result<RocksDb> RocksDb::open(std::string path, RocksDbOptions options) {
     table_options.optimize_filters_for_hits = true;
     db_options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(table_options));
 
-    db_options.use_direct_reads = options.use_direct_reads;
+    db_options.use_direct_reads = false;
     db_options.create_if_missing = true;
     db_options.max_background_compactions = 4;
     db_options.max_background_flushes = 2;
