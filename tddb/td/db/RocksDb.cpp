@@ -72,14 +72,15 @@ Result<RocksDb> RocksDb::open(std::string path, RocksDbOptions options) {
     rocksdb::BlockBasedTableOptions table_options;
     table_options.block_cache = options.block_cache;
     table_options.optimize_filters_for_memory = true;
+    table_options.optimize_filters_for_hits = true;
     db_options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(table_options));
 
     db_options.use_direct_reads = options.use_direct_reads;
     db_options.create_if_missing = true;
     db_options.max_background_compactions = 4;
     db_options.max_background_flushes = 2;
-    db_options.bytes_per_sync = 1 << 20;
-    db_options.writable_file_max_buffer_size = 2 << 14;
+    db_options.bytes_per_sync = 0;
+    db_options.writable_file_max_buffer_size = 0;
     db_options.statistics = options.statistics;
     rocksdb::OptimisticTransactionDBOptions occ_options;
     occ_options.validate_policy = rocksdb::OccValidationPolicy::kValidateSerial;
