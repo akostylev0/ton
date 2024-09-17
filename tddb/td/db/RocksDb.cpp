@@ -74,7 +74,6 @@ Result<RocksDb> RocksDb::open(std::string path, RocksDbOptions options) {
     db_options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(table_options));
 
     db_options.use_direct_reads = options.use_direct_reads;
-    db_options.manual_wal_flush = true;
     db_options.create_if_missing = true;
     db_options.max_background_compactions = 4;
     db_options.max_background_flushes = 2;
@@ -221,7 +220,7 @@ Status RocksDb::begin_write_batch() {
 Status RocksDb::begin_transaction() {
   CHECK(!write_batch_);
   rocksdb::WriteOptions options;
-  options.sync = true;
+  options.sync = false;
   transaction_.reset(db_->BeginTransaction(options, {}));
   return Status::OK();
 }
@@ -230,7 +229,7 @@ Status RocksDb::commit_write_batch() {
   CHECK(write_batch_);
   auto write_batch = std::move(write_batch_);
   rocksdb::WriteOptions options;
-  options.sync = true;
+  options.sync = false;
   return from_rocksdb(db_->Write(options, write_batch.get()));
 }
 
