@@ -169,6 +169,7 @@ Status RocksDb::erase(Slice key) {
 
 Result<size_t> RocksDb::count(Slice prefix) {
   rocksdb::ReadOptions options;
+  options.async_io = true;
   options.snapshot = snapshot_.get();
   std::unique_ptr<rocksdb::Iterator> iterator;
   if (snapshot_ || !transaction_) {
@@ -192,6 +193,7 @@ Result<size_t> RocksDb::count(Slice prefix) {
 
 Status RocksDb::for_each(std::function<Status(Slice, Slice)> f) {
   rocksdb::ReadOptions options;
+  options.async_io = true;
   options.snapshot = snapshot_.get();
   std::unique_ptr<rocksdb::Iterator> iterator;
   if (snapshot_ || !transaction_) {
