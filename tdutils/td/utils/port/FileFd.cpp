@@ -586,17 +586,6 @@ Result<Stat> FileFd::stat() const {
 
 Status FileFd::sync() {
   CHECK(!empty());
-#if TD_PORT_POSIX
-#if TD_DARWIN
-  if (detail::skip_eintr([&] { return fcntl(get_native_fd().fd(), F_FULLFSYNC); }) == -1) {
-#else
-  if (detail::skip_eintr([&] { return fsync(get_native_fd().fd()); }) != 0) {
-#endif
-#elif TD_PORT_WINDOWS
-  if (FlushFileBuffers(get_native_fd().fd()) == 0) {
-#endif
-    return OS_ERROR("Sync failed");
-  }
   return Status::OK();
 }
 
